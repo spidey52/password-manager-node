@@ -7,6 +7,12 @@ const schema = new Schema({
         required: true,
         trim: true
     },
+    username: {
+        type: String,
+    },
+    email: {
+        type: String
+    },
     password: {
         type: String,
         required: true,
