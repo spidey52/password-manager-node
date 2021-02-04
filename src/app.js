@@ -27,6 +27,12 @@ db.once('open', function () {
 })
 
 // routers 
+
+app.get('/', (req, res) => {
+    const dateTime = new Date().toLocaleString()
+    return res.send(`${dateTime} ok`);
+})
+
 const userRouter = require('./router/user')
 const passwdRouter = require('./router/passwd')
 
