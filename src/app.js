@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const app = express()
 const cors = require('cors')
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 4000
 const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost/password-manager'
 
 // cors
@@ -15,8 +15,9 @@ app.use(express.json())
 // mongoose connection
 mongoose.connect(mongoUri, {
     useNewUrlParser: true,
-    useUnifiedTopology: true, 
-    useCreateIndex: true
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false
 })
 
 const db = mongoose.connection

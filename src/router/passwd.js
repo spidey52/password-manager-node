@@ -23,15 +23,21 @@ router.get("/", isAuthenticated, async (req, res) => {
   }
 });
 
-// router.get('/:name', (req, res) => {
-//     res.send('passwor by name.')
-// })
+router.get('/:id', async (req, res) => {
+  try {
+    const data = await Passwd.findById(req.params.id)
+    res.end(data)
+  } catch (e) {
+    res.status(500).send({ error: 'unable to get the password.' });
+  }
+})
 
 router.patch("/", async (req, res) => {
   try {
-    console.log(req.body);
     const passwd = await Passwd.findByIdAndUpdate(req.body._id, {
       password: req.body.password,
+      username: req.body.username,
+      email: req.body.email
     });
     res.send({ msg: true });
   } catch (e) {

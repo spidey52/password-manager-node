@@ -51,7 +51,6 @@ schema.virtual('passwds', {
 schema.methods.getAllPasswords = async function() {
     const user = this 
     const passwds = await user.populate('passwds').execPopulate()
-    console.log(passwds)
     return passwds
 }
 
