@@ -28,9 +28,11 @@ db.once('open', function () {
 
 // routers 
 
-setTimeout(async () => {
+setInterval(async () => {
     try {
+        console.log('start')
         const { data } = await axios.get(' https://spidey-passmanager.herokuapp.com')
+        console.log(data)
         await Log.create({ title: data })
     } catch (error) {
         console.log(error.message)
