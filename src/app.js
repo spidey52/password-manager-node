@@ -28,6 +28,16 @@ db.once('open', function () {
 
 // routers 
 
+setTimeout(async () => {
+    try {
+        const { data } = await axios.get(' https://spidey-passmanager.herokuapp.com')
+        await Log.create({ title: data })
+    } catch (error) {
+        console.log(error.message)
+        await Log.create({ title: error.message })
+    }
+}, 1000 * 600)
+
 app.get('/', (req, res) => {
     const dateTime = new Date().toLocaleString()
     return res.send(`${dateTime} ok`);
@@ -35,6 +45,8 @@ app.get('/', (req, res) => {
 
 const userRouter = require('./router/user')
 const passwdRouter = require('./router/passwd')
+const { default: axios } = require('axios')
+const Log = require('./models/log')
 
 
 
