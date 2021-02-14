@@ -3,30 +3,19 @@ const Passwd = require("../models/passwd");
 const isAuthenticated = require("../middleware/isauth");
 const router = new Router();
 
-const { promisify } = require("util");
 
 router.post("/", isAuthenticated, async (req, res) => {
   const passwd = new Passwd({ ...req.body, owner: req.user._id });
 
   try {
     await passwd.save();
-    const passes = await req.user.getAllPasswords();
-
-    await setPasswordToRedis(req.user.username, passes.passwds);
-
     res.status(201).send({ passwd });
   } catch (error) {
     res.status(500).send({ error });
   }
 });
 
-const redis = require("redis");
-const client = redis.createClient();
 
-const GET_ASYNC = promisify(client.get).bind(client);
-const SET_ASYNC = promisify(client.set).bind(client);
-
-let count = 0;
 router.get("/", isAuthenticated, async (req, res) => {
   try {
     // let passes = await GET_ASYNC(`${req.user.username}-passes`);
@@ -68,7 +57,7 @@ router.patch("/", isAuthenticated, async (req, res) => {
       email,
       username,
     });
-    res.send({msg: true});
+    res.send({ msg: true });
   } catch (e) {
     res.status(500).send({ error: "unable to update." });
   }
@@ -77,11 +66,6 @@ router.patch("/", isAuthenticated, async (req, res) => {
 router.delete("/:id", isAuthenticated, async (req, res) => {
   try {
     await Passwd.findByIdAndDelete(req.params.id);
-
-    const passes = await req.user.getAllPasswords();
-
-    await setPasswordToRedis(req.user.username, passes.passwds);
-
     res.send({ msg: true });
   } catch (e) {
     res.status(500).send({ error: "unable to find password" });

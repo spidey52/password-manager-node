@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/app.js",
+    "dev": "nodemon src/express/app.js",
     "build": "netlify-lambda  build src/express",
-    "start": "node src/app.js"
+    "start": "node src/express/app.js"
   },
   "keywords": [],
   "author": "",

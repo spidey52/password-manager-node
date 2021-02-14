@@ -30,7 +30,6 @@ db.once("open", function () {
 // routers
 const userRouter = require("../router/user");
 const passwdRouter = require("../router/passwd");
-const client = require("../redis/redis-conn");
 
 app.get("/", (req, res) => {
   res.send("hello");
