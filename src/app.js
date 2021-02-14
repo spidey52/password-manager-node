@@ -1,6 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 const mongoose = require("mongoose");
+const serverless = require('serverless-http')
 const app = express();
 const cors = require("cors");
 
@@ -38,7 +39,9 @@ app.get("/", (req, res) => {
 app.use("/users", userRouter);
 app.use("/passwds", passwdRouter);
 
-app.listen(port, () => {
-  console.log("Everythng is fine, you are doing good job bro.");
-  console.log(`server is running on http://localhost:${port}`);
-});
+// app.listen(port, () => {
+//   console.log("Everythng is fine, you are doing good job bro.");
+//   console.log(`server is running on http://localhost:${port}`);
+// });
+
+module.exports.handler = serverless(app)

@@ -21,6 +21,7 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.25",
-    "redis": "^3.0.2"
+    "redis": "^3.0.2",
+    "serverless-http": "^2.7.0"
   }
 }
