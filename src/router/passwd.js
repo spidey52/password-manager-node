@@ -14,6 +14,7 @@ router.post("/", isAuthenticated, async (req, res) => {
   }
 });
 
+// router.get("/",  async (req, res) => {
 router.get("/", isAuthenticated, async (req, res) => {
   try {
     await req.user.getAllPasswords();
@@ -34,11 +35,15 @@ router.get('/:id', async (req, res) => {
 
 router.patch("/", async (req, res) => {
   try {
-    const passwd = await Passwd.findByIdAndUpdate(req.body._id, {
-      password: req.body.password,
-      username: req.body.username,
-      email: req.body.email
-    });
+    const passwd = await Passwd.findById(req.body._id)
+
+    passwd.password = req.body.password,
+      passwd.username = req.body.username,
+      passwd.email = req.body.email
+
+    await passwd.save()
+    console.log('rich here')
+
     res.send({ msg: true });
   } catch (e) {
     res.status(500).send({ error: "unable to update." });

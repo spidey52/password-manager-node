@@ -48,8 +48,8 @@ schema.virtual('passwds', {
 })
 
 
-schema.methods.getAllPasswords = async function() {
-    const user = this 
+schema.methods.getAllPasswords = async function () {
+    const user = this
     const passwds = await user.populate('passwds').execPopulate()
     return passwds
 }
@@ -67,7 +67,7 @@ schema.methods.toJSON = function () {
 
 schema.methods.generateAuthToken = async function () {
     const user = this
-    const token = jwt.sign({ _id: user.id.toString() }, 'thisismynewcourse', )
+    const token = jwt.sign({ _id: user.id.toString() }, 'thisismynewcourse',)
     user.tokens = user.tokens.concat({ token })
 
     await user.save()
@@ -85,7 +85,7 @@ schema.statics.findByCredentials = async (email, password) => {
 
     if (!isMatch) {
         // throw new Error({msg: "password is incorrect"})
-        throw new Error( "password is incorrect")
+        throw new Error("password is incorrect")
     }
 
     return user

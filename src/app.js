@@ -28,17 +28,17 @@ db.once('open', function () {
 
 // routers 
 
-setInterval(async () => {
-    try {
-        console.log('start')
-        const { data } = await axios.get(' https://spidey-passmanager.herokuapp.com')
-        console.log(data)
-        await Log.create({ title: data })
-    } catch (error) {
-        console.log(error.message)
-        await Log.create({ title: error.message })
-    }
-}, 1000 * 600)
+// setInterval(async () => {
+//     try {
+//         console.log('start')
+//         const { data } = await axios.get(' https://spidey-passmanager.herokuapp.com')
+//         console.log(data)
+//         await Log.create({ title: data })
+//     } catch (error) {
+//         console.log(error.message)
+//         await Log.create({ title: error.message })
+//     }
+// }, 1000 * 600)
 
 app.get('/', (req, res) => {
     const dateTime = new Date().toLocaleString()
@@ -60,5 +60,4 @@ app.listen(port, () => {
     console.log('Everythng is fine, you are doing good job bro.')
     console.log(`server is running on http://localhost:${port}`)
 })
-
 

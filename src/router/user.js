@@ -9,9 +9,9 @@ router.get('/checkusername/:username', async (req, res) => {
         console.log(req.params.username)
         const user = await User.findOne({ username: req.params.username })
         if (!user) {
-            return res.send({msg: true})
+            return res.send({ msg: true })
         }
-        return res.send({msg: false})
+        return res.send({ msg: false })
     }
     catch (e) {
         console.log(e)
