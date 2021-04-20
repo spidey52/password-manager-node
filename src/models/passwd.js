@@ -30,6 +30,10 @@ const schema = new Schema({
         type: String,
         required: true,
     },
+    clicks: {
+        type: Number,
+        default: 0
+    },
     owner: {
         type: Schema.Types.ObjectId,
         required: true,

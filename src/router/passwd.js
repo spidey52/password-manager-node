@@ -14,12 +14,25 @@ router.post("/", isAuthenticated, async (req, res) => {
   }
 });
 
+router.get("/:id/clicks", isAuthenticated, async (req, res) => {
+  try {
+    const passwd = await Passwd.findById(req.params.id);
+    passwd.clicks = passwd.clicks + 1
+    await passwd.save()
+    res.send("done");
+  } catch (error) {
+    res.status(500).send({ error: error.message })
+  }
+})
+
 // router.get("/",  async (req, res) => {
 router.get("/", isAuthenticated, async (req, res) => {
   try {
-    await req.user.getAllPasswords();
-    res.send(req.user.passwds);
+    // await req.user.getAllPasswords().sort(['clicks',]);
+    const passwds = await Passwd.find({ owner: req.user._id }).sort([['clicks', -1]])
+    return res.send(passwds);
   } catch (e) {
+    console.log(e.message)
     res.status(500).send({ error: "unable to get the passwords." });
   }
 });
@@ -60,3 +73,8 @@ router.delete("/:id", async (req, res) => {
 });
 
 module.exports = router;
+
+// async function resetClicks() {
+//   const result = await Passwd.updateMany({}, {clicks: 0})
+//   console.log(result)
+// }
