@@ -76,6 +76,7 @@ schema.methods.generateAuthToken = async function () {
 }
 
 schema.statics.findByCredentials = async (email, password) => {
+    console.log(this)
     const user = await User.findOne({ email })
     if (!user) {
         throw new Error("user doesn't exists.")

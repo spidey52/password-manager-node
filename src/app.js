@@ -48,8 +48,6 @@ app.get('/', (req, res) => {
 const userRouter = require('./router/user')
 const passwdRouter = require('./router/passwd')
 const { default: axios } = require('axios')
-const Log = require('./models/log')
-
 
 
 app.use('/users', userRouter)

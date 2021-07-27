@@ -2,6 +2,7 @@ const { Router } = require("express");
 const Passwd = require("../models/passwd");
 const isAuthenticated = require("../middleware/isauth");
 const router = new Router();
+const crypto = require("crypto");
 
 router.post("/", isAuthenticated, async (req, res) => {
   const passwd = new Passwd({ ...req.body, owner: req.user._id });
@@ -22,6 +23,49 @@ router.get("/:id/clicks", isAuthenticated, async (req, res) => {
     res.send("done");
   } catch (error) {
     res.status(500).send({ error: error.message })
+  }
+})
+
+function decryptPass(password) {
+  console.log("reach here");
+
+  const epass = Buffer.from(password, 'base64').toString("ascii");
+  console.log(epass);
+  const pass = JSON.parse(epass);
+
+
+  const algorithm = "aes-256-ctr";
+  const secretKey = "vOVH6sdmpNWjRRIqCc7rdxs01lwHzfr3";
+
+  const decrypt = (hash) => {
+    const decipher = crypto.createDecipheriv(
+      algorithm,
+      secretKey,
+      Buffer.from(hash.iv, "hex")
+    );
+
+    const decrpyted = Buffer.concat([
+      decipher.update(Buffer.from(hash.content, "hex")),
+      decipher.final(),
+    ]);
+
+    return decrpyted.toString();
+  };
+
+  return decrypt(pass);
+
+}
+
+router.get("/copy", isAuthenticated, async (req, res) => {
+  try {
+    const pass = req.headers.pass
+    if (!pass) return res.status(400).send('no password found');
+
+    return res.send(decryptPass(pass))
+
+  } catch (error) {
+    console.log(error)
+    return res.status(500).send('something went wrong');
   }
 })
 
