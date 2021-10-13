@@ -27,18 +27,7 @@ db.once('open', function () {
 })
 
 // routers 
-
-// setInterval(async () => {
-//     try {
-//         console.log('start')
-//         const { data } = await axios.get(' https://spidey-passmanager.herokuapp.com')
-//         console.log(data)
-//         await Log.create({ title: data })
-//     } catch (error) {
-//         console.log(error.message)
-//         await Log.create({ title: error.message })
-//     }
-// }, 1000 * 600)
+const resetToken = {}
 
 app.get('/', (req, res) => {
     const dateTime = new Date().toLocaleString()
@@ -47,12 +36,49 @@ app.get('/', (req, res) => {
 
 const userRouter = require('./router/user')
 const passwdRouter = require('./router/passwd')
-const { default: axios } = require('axios')
+const User = require('./models/user')
+const sendMail = require("./middleware/sendMail")
 
 
 app.use('/users', userRouter)
 app.use('/passwds', passwdRouter)
 
+app.get("/reset-password", async (req, res) => {
+
+    try {
+        const { email } = req.query
+        if (!email) return res.status(404).send("email not found")
+        const user = await User.findOne({ email: email })
+        if (!user) return res.status(404).send("no user found")
+        const token = Math.floor(Math.random() * 100000 + 1)
+        resetToken[email] = token
+        sendMail(email, "reset password", "hello", `your otp for reset password is ${token}`)
+        setTimeout(() => {
+            delete resetToken[email]
+        }, 1000 * 60 * 5)
+        return res.send(`${token}`)
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send("something went wrong")
+    }
+
+})
+
+app.post("/reset-password", async (req, res) => {
+    const { email, otp, newPassword } = req.body
+    const user = await User.findOne({ email: email })
+    if (!user) return res.send("no user found")
+
+    if (!otp) return res.status(400).send("token not found")
+    if (!resetToken[email]) return res.status(400).send("token expired")
+    if (parseInt(otp) !== parseInt(resetToken[email])) return res.status(400).send("otp is invalid")
+
+    user.password = newPassword
+    await user.save()
+    delete resetToken[email]
+    const token = await user.generateAuthToken(email, newPassword)
+    res.status(200).send({ user, token })
+})
 
 app.listen(port, () => {
     console.log('Everythng is fine, you are doing good job bro.')
