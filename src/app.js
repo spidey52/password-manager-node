@@ -36,12 +36,14 @@ app.get('/', (req, res) => {
 
 const userRouter = require('./router/user')
 const passwdRouter = require('./router/passwd')
+const tickerRouter = require('./router/ticker')
 const User = require('./models/user')
 const sendMail = require("./middleware/sendMail")
 
 
 app.use('/users', userRouter)
 app.use('/passwds', passwdRouter)
+app.use("/tickers", tickerRouter)
 
 app.get("/reset-password", async (req, res) => {
 
