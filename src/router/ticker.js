@@ -15,6 +15,7 @@ router.get('/', async (req, res) => {
 router.get('/sharma', async (req, res) => {
 	const sharmaProfit = require("../binance/sharma")
 	const profit = await sharmaProfit()
+	console.log(profit)
 	return res.send({ profit: profit * 80 })
 })
 
