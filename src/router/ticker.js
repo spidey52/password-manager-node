@@ -3,8 +3,6 @@ const Ticker = require('../models/ticker')
 
 const router = new Router()
 
-
-
 router.get('/', async (req, res) => {
 	try {
 		const tickers = await Ticker.find()
@@ -12,6 +10,12 @@ router.get('/', async (req, res) => {
 	} catch (error) {
 		return res.send(500).send(error.message)
 	}
+})
+
+router.get('/sharma', async (req, res) => {
+	const sharmaProfit = require("../binance/sharma")
+	const profit = await sharmaProfit()
+	return res.send({ profit: profit * 80 })
 })
 
 router.post("/", async (req, res) => {
@@ -27,6 +31,13 @@ router.post("/", async (req, res) => {
 	} catch (error) {
 		return res.send(error.message)
 	}
+})
+
+router.delete("/:ticker", async (req, res) => {
+	const ticker = req.params.ticker
+	const lol = await Ticker.findOneAndDelete({ name: ticker })
+
+	return res.send("deleted")
 })
 
 module.exports = router
