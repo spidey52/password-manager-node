@@ -19,6 +19,12 @@ router.get('/sharma', async (req, res) => {
 	return res.send({ profit: profit * 80 })
 })
 
+router.get('/satyam', async (req, res) => {
+	const satyamProfit = require("../binance/satyam")
+	const profit = await satyamProfit()
+	return res.send({ profit: profit * 80 })
+})
+
 router.post("/", async (req, res) => {
 	try {
 		const ticker = req.body.ticker
