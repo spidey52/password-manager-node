@@ -20,14 +20,22 @@ router.get('/sharma', async (req, res) => {
 })
 
 router.get('/satyam', async (req, res) => {
-	const satyamProfit = require("../binance/satyam")
-	const profit = await satyamProfit()
-	return res.send({ profit: profit * 80 })
+	const { getAllProfits } = require("../binance/satyam")
+	const profit = await getAllProfits()
+	return res.send({ profit })
+})
+
+
+router.get('/margin', async (req, res) => {
+	const { getPositions } = require('../binance/satyam')
+	const data = await getPositions()
+	return res.send(data)
 })
 
 router.post("/", async (req, res) => {
 	try {
 		const ticker = req.body.ticker
+		if (!ticker) return res.status(400).send('please send {ticker: tickername}')
 		const isExists = await Ticker.findOne({ name: ticker })
 		if (isExists) {
 			console.log(isExists)
@@ -45,6 +53,13 @@ router.delete("/:ticker", async (req, res) => {
 	const lol = await Ticker.findOneAndDelete({ name: ticker })
 
 	return res.send("deleted")
+})
+
+router.delete("/id/:id", async (req, res) => {
+	const id = req.params.id
+	const ticker = await Ticker.findByIdAndDelete(id)
+
+	return res.send('deleted');
 })
 
 module.exports = router
