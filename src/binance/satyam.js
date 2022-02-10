@@ -66,9 +66,8 @@ const getTodayProfit = async (ticker, option) => {
 	return totalProfit
 }
 
-const getAllProfits = async () => {
+const getAllProfits = async (tickers) => {
 
-	const tickers = await Ticker.find({})
 	let totalProfit = 0
 
 	for (let i = 0; i < tickers.length; i++) {
