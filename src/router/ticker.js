@@ -3,12 +3,15 @@ const Ticker = require('../models/ticker')
 
 const router = new Router()
 
+const { getAllProfits, isValidTicker } = require("../binance/satyam")
+const { default: axios } = require('axios')
+
 router.get('/', async (req, res) => {
 	try {
-		const tickers = await Ticker.find()
+		const tickers = await Ticker.find({})
 		return res.send(tickers)
 	} catch (error) {
-		return res.send(500).send(error.message)
+		return res.status(500).send(error.message)
 	}
 })
 
@@ -20,8 +23,8 @@ router.get('/sharma', async (req, res) => {
 })
 
 router.get('/satyam', async (req, res) => {
-	const { getAllProfits } = require("../binance/satyam")
-	const profit = await getAllProfits()
+	let tickers = req.query.tickers?.split(',') || []
+	const profit = await getAllProfits(tickers)
 	return res.send({ profit })
 })
 
@@ -38,9 +41,10 @@ router.post("/", async (req, res) => {
 		if (!ticker) return res.status(400).send('please send {ticker: tickername}')
 		const isExists = await Ticker.findOne({ name: ticker })
 		if (isExists) {
-			console.log(isExists)
-			return res.send("already have coin added")
+			return res.status(500).send("ticker already added")
 		}
+		const isValid = await isValidTicker(ticker)
+		if (!isValid) return res.status(500).send('invalid ticker name')
 		const createdTicker = await Ticker.create({ name: ticker })
 		return res.send(createdTicker)
 	} catch (error) {

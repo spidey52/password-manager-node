@@ -54,7 +54,6 @@ const getTodayProfit = async (ticker, option) => {
 				if (option && option.log) {
 					const date = new Date(order.timestamp)
 					console.log(date.toLocaleString(), " --- profit/loss  --- ", order.info.realizedPnl)
-					// console.log(order.info.realizedPnl)
 				}
 			}
 		}
@@ -68,20 +67,23 @@ const getTodayProfit = async (ticker, option) => {
 
 const getAllProfits = async (tickers) => {
 
+	const val = await exchange.fetchMarkets()
+	const tickersName = val.map(t => t.id)
+
 	let totalProfit = 0
 
 	for (let i = 0; i < tickers.length; i++) {
-		totalProfit += await getTodayProfit(tickers[i].name, { log: false })
+		if (!tickersName.includes(tickers[i])) continue;
+		totalProfit += await getTodayProfit(tickers[i], { log: false })
 	}
-	// console.log('overall total profit: ', totalProfit * 80)
 	return totalProfit
+
 }
 
 
 
 const getPositions = async () => {
 	const data = await exchange.fetchBalance()
-	// console.log(data.info.positions);
 	const { totalWalletBalance } = data.info
 
 	const filledData = []
@@ -117,8 +119,18 @@ const getPositions = async () => {
 	console.log("amount when position get liquidated: ", amountWhenBalanceZero)
 
 	return { leftBalance, totalUnrealizedProfit, marginToTrade, amountWhenBalanceZero }
+}
+
+const isValidTicker = async (ticker) => {
+
+	const val = await exchange.fetchMarkets()
+	const tickersName = val.map(t => t.id)
+
+	console.log(tickersName)
+
+	return tickersName.includes(ticker)
 
 }
 
 
-module.exports = { getAllProfits, getPositions, getTodayProfit }
+module.exports = { getAllProfits, getPositions, getTodayProfit, isValidTicker }
