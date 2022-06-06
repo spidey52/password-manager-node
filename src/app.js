@@ -40,6 +40,7 @@ app.get('/', (req, res) => {
 const userRouter = require('./router/user')
 const passwdRouter = require('./router/passwd')
 const tickerRouter = require('./router/ticker')
+const cryptoRouter = require('./router/coin')
 const User = require('./models/user')
 const sendMail = require("./middleware/sendMail")
 
@@ -47,6 +48,7 @@ const sendMail = require("./middleware/sendMail")
 app.use('/users', userRouter)
 app.use('/passwds', passwdRouter)
 app.use("/tickers", tickerRouter)
+app.use('/crypto', cryptoRouter)
 
 app.get("/reset-password", async (req, res) => {
 
