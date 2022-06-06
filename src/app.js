@@ -1,5 +1,7 @@
-const express = require('express')
 require('dotenv').config()
+const express = require('express')
+const { Server: SocketServer } = require('socket.io')
+const { createServer } = require('http')
 const mongoose = require('mongoose')
 const app = express()
 const cors = require('cors')
@@ -11,6 +13,32 @@ const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost/password-manage
 app.use(cors())
 
 app.use(express.json())
+
+const httpServer = createServer(app)
+const io = new SocketServer(httpServer, {
+    cors: {
+        origin: "*"
+    }
+});
+
+
+const { terminalHandler, currentActiveProcess } = require('./terminal')
+console.log(currentActiveProcess)
+io.on('connection', async (socket) => {
+    console.log('connection established', socket.id)
+    let userType = socket.handshake.headers.usertype
+    if (userType === 'terminal') terminalHandler(io, socket);
+
+    else {
+        socket.disconnect();
+        return;
+    }
+
+
+});
+
+
+
 
 // mongoose connection
 mongoose.connect(mongoUri, {
@@ -24,7 +52,7 @@ const db = mongoose.connection
 db.on('error', console.error.bind(console, 'connection error:'))
 db.on('error', (err) => {
     console.log(err.message)
-} )
+})
 db.once('open', function () {
     console.log('database connected')
 })
@@ -35,6 +63,12 @@ const resetToken = {}
 app.get('/', (req, res) => {
     const dateTime = new Date().toLocaleString()
     return res.send(`${dateTime} ok`);
+})
+
+app.get('/active-terminal', async (req, res) => {
+
+
+    return res.send(Object.keys(currentActiveProcess));
 })
 
 const userRouter = require('./router/user')
@@ -87,7 +121,7 @@ app.post("/reset-password", async (req, res) => {
     res.status(200).send({ user, token })
 })
 
-app.listen(port, () => {
+httpServer.listen(port, () => {
     console.log('Everythng is fine, you are doing good job bro.')
     console.log(`server is running on http://localhost:${port}`)
 })
