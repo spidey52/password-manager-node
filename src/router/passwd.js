@@ -94,9 +94,9 @@ router.patch("/", async (req, res) => {
   try {
     const passwd = await Passwd.findById(req.body._id)
 
-    passwd.password = req.body.password,
-      passwd.username = req.body.username,
-      passwd.email = req.body.email
+    passwd.password = req.body.password;
+    passwd.username = req.body.username;
+    passwd.email = req.body.email
 
     await passwd.save()
     console.log('rich here')
