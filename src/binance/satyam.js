@@ -93,6 +93,7 @@ const getPositions = async () => {
 	let positionsSum = 0
 
 
+	let g = []
 	data.info.positions.forEach((ticker) => {
 		const { entryPrice, initialMargin, symbol, positionAmt, unrealizedProfit } = ticker
 		if (parseFloat(initialMargin) > 0) {
@@ -100,8 +101,11 @@ const getPositions = async () => {
 			totalUnrealizedProfit += parseFloat(unrealizedProfit)
 			filledData.push(ticker)
 			positions[symbol] = (parseFloat(entryPrice) * parseFloat(positionAmt))
+			g.push({ symbol, positionAmt, entryPrice })
 		}
 	})
+
+	console.table(g)
 
 	Object.keys(positions).forEach(key => positionsSum += positions[key])
 
